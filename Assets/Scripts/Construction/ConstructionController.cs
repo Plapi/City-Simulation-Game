@@ -6,7 +6,7 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 	[SerializeField] private Construction[] constructions = default;
 
 	private int currentConstructionId;
-	private Dictionary<(int, int), Construction> createdConstructions = new Dictionary<(int, int), Construction>();
+	private Dictionary<(int, int), Construction> createdConstructionsDict = new Dictionary<(int, int), Construction>();
 
 	private Construction currentConstruction => constructions[currentConstructionId];
 
@@ -14,6 +14,7 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 		CityData.Instance.Constructions.ForEach(construction => {
 			PlaceConstruction(construction.Id, construction.X, construction.Z);
 		});
+		NavigationController.Instance.CalculateAllAdjacents();
 	}
 
 	public void StartBuild(int id) {
@@ -39,6 +40,7 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 		if (TryGetSnappedPos(mousePos, out int x, out int z) && CanPlaceCurrentConstruction(x, z)) {
 			PlaceConstruction(currentConstructionId, x, z);
 			CityData.Instance.AddConstruction(currentConstructionId, x, z);
+			NavigationController.Instance.CalculateAllAdjacents();
 		}
 	}
 
@@ -46,11 +48,13 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 		Construction newConstruction = Instantiate(constructions[id], transform);
 		newConstruction.gameObject.SetActive(true);
 		newConstruction.transform.position = new Vector3(x, 0f, z);
-		createdConstructions.Add((x, z), newConstruction);
+		createdConstructionsDict.Add((x, z), newConstruction);
+		CreateConnections(newConstruction, x, z);
+		NavigationController.Instance.AddNode(newConstruction);
 	}
 
 	private bool CanPlaceCurrentConstruction(int x, int z) {
-		if (createdConstructions.ContainsKey((x, z))) {
+		if (createdConstructionsDict.ContainsKey((x, z))) {
 			return false;
 		}
 		return true;
@@ -64,6 +68,29 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 			return true;
 		}
 		return false;
+	}
+
+	// create connexions between (INTERMEDIAR <--> INTERMEDIAR; INPUT <--> INTERMEDIAR; OUTPUT <--> INTERMEDIAR)
+	private void CreateConnections(Construction newConstruction, int x, int z) {
+		GetAdjConstructions(x, z).ForEach(adjConstruction => {
+			if (newConstruction.NodeType == NodeType.INTERMEDIAR || adjConstruction.NodeType == NodeType.INTERMEDIAR) {
+				newConstruction.AddNextConstruction(adjConstruction);
+				adjConstruction.AddNextConstruction(newConstruction);
+			}
+		});
+	}
+
+	private List<Construction> GetAdjConstructions(int x, int z) {
+		List<Construction> adjConstructions = new List<Construction>();
+		(int, int)[] checks = new (int, int)[4] {
+			(x + 1, z), (x, z + 1), (x - 1, z), (x, z - 1)
+		};
+		for (int i = 0; i < checks.Length; i++) {
+			if (createdConstructionsDict.ContainsKey(checks[i])) {
+				adjConstructions.Add(createdConstructionsDict[checks[i]]);
+			}
+		}
+		return adjConstructions;
 	}
 }
 
