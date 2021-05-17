@@ -49,6 +49,18 @@ public static class Utils {
 		return false;
 	}
 
+	public static int Random(int min, int max) {
+		return UnityEngine.Random.Range(min, max);
+	}
+
+	public static float Random(float min, float max) {
+		return UnityEngine.Random.Range(min, max);
+	}
+
+	public static Color RandomColor() {
+		return new Color(Random(0f, 1f), Random(0f, 1f), Random(0f, 1f));
+	}
+
 	#region Transform Extensions
 
 	public static void SetX(this Transform transform, float x) {

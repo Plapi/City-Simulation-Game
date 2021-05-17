@@ -14,7 +14,7 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 		CityData.Instance.Constructions.ForEach(construction => {
 			PlaceConstruction(construction.Id, construction.X, construction.Z);
 		});
-		NavigationController.Instance.CalculateAllAdjacents();
+		NavigationController.Instance.UpdateGraph();
 	}
 
 	public void StartBuild(int id) {
@@ -40,7 +40,7 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 		if (TryGetSnappedPos(mousePos, out int x, out int z) && CanPlaceCurrentConstruction(x, z)) {
 			PlaceConstruction(currentConstructionId, x, z);
 			CityData.Instance.AddConstruction(currentConstructionId, x, z);
-			NavigationController.Instance.CalculateAllAdjacents();
+			NavigationController.Instance.UpdateGraph();
 		}
 	}
 

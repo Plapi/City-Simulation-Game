@@ -55,6 +55,7 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Plugins/Singleton.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTweenPro/DOTweenProShortcuts.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModulePhysics2D.cs" />
@@ -66,12 +67,11 @@
     <Compile Include="Assets/Plugins/Demigiant/DOTweenPro/DOTweenTextMeshPro.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTweenPro/DOTweenDeAudio.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleSprite.cs" />
+    <Compile Include="Assets/Plugins/ScriptableObjectSingleton.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTween/Modules/DOTweenModuleUI.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTweenPro/DOTweenTk2d.cs" />
     <Compile Include="Assets/Plugins/Utils.cs" />
     <Compile Include="Assets/Plugins/Demigiant/DOTweenPro/DOTweenAnimation.cs" />
-    <Compile Include="Assets/Plugins/ScriptableObjectSingleton.cs" />
-    <Compile Include="Assets/Plugins/Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/Plugins/Demigiant/readme_DOTweenPro.txt" />
