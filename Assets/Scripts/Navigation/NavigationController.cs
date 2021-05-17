@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class NavigationController : MonoBehaviourSingleton<NavigationController> {
@@ -12,8 +11,6 @@ public class NavigationController : MonoBehaviourSingleton<NavigationController>
 	private List<Construction> outputWaitingNodes = new List<Construction>();
 
 	private List<Car> cars = new List<Car>();
-
-	private List<Path> paths = new List<Path>();
 
 	private int[][] graph;
 
@@ -34,7 +31,7 @@ public class NavigationController : MonoBehaviourSingleton<NavigationController>
 		CheckNavigation();
 	}
 
-	/*private void LateUpdate() {
+	private void LateUpdate() {
 		cars.ForEach(car0 => {
 			if (car0.IsNavigating) {
 				if (!car0.IsStoppedByOtherCar) {
@@ -48,7 +45,7 @@ public class NavigationController : MonoBehaviourSingleton<NavigationController>
 				}
 			}
 		});
-	}*/
+	}
 
 	private void CheckNavigation() {
 		for (int i = 0; i < inputWaitingNodes.Count && i < outputWaitingNodes.Count; i++) {
@@ -79,40 +76,9 @@ public class NavigationController : MonoBehaviourSingleton<NavigationController>
 	}
 
 	private void Navigate(Car car, Vector3[] goPoints, Vector3[] returnPoints) {
-		Navigate(car, goPoints, () => {
-			Navigate(car, returnPoints, () => {
+		car.Navigate(goPoints, () => {
+			car.Navigate(returnPoints, () => {
 				Navigate(car, goPoints, returnPoints);
-			});
-		});
-	}
-
-	private void Navigate(Car car, Vector3[] points, Action onComplete) {
-		Path path = new Path { points = new List<Vector3>(points) };
-		AddNewPath(path);
-		car.Navigate(points, () => {
-			paths.Remove(path);
-			onComplete?.Invoke();
-		});
-	}
-
-	private void AddNewPath(Path path) {
-		paths.ForEach(p => {
-			path.points.ForEach(point0 => {
-				p.points.ForEach(point1 => {
-					if (Vector3.Distance(point0, point1) < 0.1f) {
-						path.intersectionPoints.Add(Vector3.Lerp(point0, point1, 0.5f));
-					}
-				});
-			});
-		});
-		paths.Add(path);
-	}
-
-	private void OnDrawGizmos() {
-		Gizmos.color = Color.red;
-		paths.ForEach(path => {
-			path.intersectionPoints.ForEach(point => {
-				Gizmos.DrawCube(point, Vector3.one * 0.1f);
 			});
 		});
 	}
@@ -150,11 +116,6 @@ public class NavigationController : MonoBehaviourSingleton<NavigationController>
 		float angle = 180f - Vector3.SignedAngle(direction0, direction1, Vector3.up);
 		Vector3 newDirection = Quaternion.Euler(0, angle / 2f, 0) * direction1;
 		return p1 + newDirection * laneOffset;
-	}
-
-	private class Path {
-		public List<Vector3> points;
-		public List<Vector3> intersectionPoints = new List<Vector3>();
 	}
 }
 

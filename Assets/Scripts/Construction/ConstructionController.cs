@@ -39,7 +39,10 @@ public class ConstructionController : MonoBehaviour, IMousePositonUpdate, IMouse
 	public void OnMouseTap(Vector2 mousePos) {
 		if (TryGetSnappedPos(mousePos, out int x, out int z) && CanPlaceCurrentConstruction(x, z)) {
 			PlaceConstruction(currentConstructionId, x, z);
+
 			CityData.Instance.AddConstruction(currentConstructionId, x, z);
+			CityData.Instance.Save();
+
 			NavigationController.Instance.UpdateGraph();
 		}
 	}

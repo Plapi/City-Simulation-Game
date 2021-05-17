@@ -17,6 +17,11 @@ public class DebugWindow : EditorWindow {
 		EditorGUILayout.BeginVertical();
 		s_scrollPos = EditorGUILayout.BeginScrollView(s_scrollPos);
 		Time.timeScale = EditorGUILayout.Slider("Time Scale", Time.timeScale, 0f, 1f);
+
+		if (GUILayout.Button("Delete City Data")) {
+			CityData.Delete();
+		}
+
 		EditorGUILayout.EndScrollView();
 		EditorGUILayout.EndVertical();
 	}

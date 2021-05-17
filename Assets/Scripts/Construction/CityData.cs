@@ -2,7 +2,20 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class CityData : ScriptableObjectSingleton<CityData> {
+public class CityData {
+
+	private const string CITY_DATA_KEY = "CITY_DATA";
+
+	private static CityData instance;
+
+	public static CityData Instance {
+		get {
+			if (instance == null) {
+				instance = JsonUtility.FromJson<CityData>(PlayerPrefs.GetString(CITY_DATA_KEY, "{}"));
+			}
+			return instance;
+		}
+	}
 
 	[SerializeField] private List<ConstructionData> constructions = new List<ConstructionData>();
 
@@ -10,6 +23,16 @@ public class CityData : ScriptableObjectSingleton<CityData> {
 
 	public void AddConstruction(int id, int x, int z) {
 		constructions.Add(new ConstructionData(id, x, z));
+	}
+
+	public void Save() {
+		PlayerPrefs.SetString(CITY_DATA_KEY, JsonUtility.ToJson(this));
+		PlayerPrefs.Save();
+	}
+
+	public static void Delete() {
+		PlayerPrefs.DeleteKey(CITY_DATA_KEY);
+		PlayerPrefs.Save();
 	}
 
 	[Serializable]
